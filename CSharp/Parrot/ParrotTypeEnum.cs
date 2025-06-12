@@ -1,5 +1,9 @@
-﻿namespace Parrot
+﻿using System;
+
+namespace Parrot
 {
+    
+    [Obsolete("Use ParotFactory instead.")]
     public enum ParrotTypeEnum
     {
         EUROPEAN,

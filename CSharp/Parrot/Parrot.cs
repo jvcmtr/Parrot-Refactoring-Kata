@@ -1,71 +1,33 @@
 ﻿using System;
 using System.Collections.Generic;
+using Parrot.Implementations;
 
 namespace Parrot
 {
-    public class Parrot
-    {
-        private readonly bool _isNailed;
-        private readonly int _numberOfCoconuts;
-        private readonly ParrotTypeEnum _type;
-        private readonly double _voltage;
 
+    /// <summary>
+    /// ⚠️ This class is deprecated. Please use <c><see cref="IParrot"/></c> <c><see cref="ParrotFactory"/></c> instead.
+    /// </summary>
+    [Obsolete("Use IParrot instead.")]
+    public class Parrot : IParrot
+    {
+        // Uses composition instead of inheritance to allow for more flexibility 
+        private readonly IParrot _implementation;
+        public string GetCry() => _implementation.GetCry();
+        public double GetSpeed() => _implementation.GetSpeed();
+
+        // Mantains the old constructor for backwards-compatibility reasons.
+        // This is not scalable. 
+        [Obsolete("Use ParotFactory instead.")]
         public Parrot(ParrotTypeEnum type, int numberOfCoconuts, double voltage, bool isNailed)
         {
-            _type = type;
-            _numberOfCoconuts = numberOfCoconuts;
-            _voltage = voltage;
-            _isNailed = isNailed;
-        }
-
-        public double GetSpeed()
-        {
-            switch (_type)
+            _implementation = type switch
             {
-                case ParrotTypeEnum.EUROPEAN:
-                    return GetBaseSpeed();
-                case ParrotTypeEnum.AFRICAN:
-                    return Math.Max(0, GetBaseSpeed() - GetLoadFactor() * _numberOfCoconuts);
-                case ParrotTypeEnum.NORWEGIAN_BLUE:
-                    return _isNailed ? 0 : GetBaseSpeed(_voltage);
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
-        }
-
-        private double GetBaseSpeed(double voltage)
-        {
-            return Math.Min(24.0, voltage * GetBaseSpeed());
-        }
-
-        private double GetLoadFactor()
-        {
-            return 9.0;
-        }
-
-        private double GetBaseSpeed()
-        {
-            return 12.0;
-        }
-
-        public string GetCry()
-        {
-            string value;
-            switch (_type)
-            {
-                case ParrotTypeEnum.EUROPEAN:
-                    value = "Sqoork!";
-                    break;
-                case ParrotTypeEnum.AFRICAN:
-                    value = "Sqaark!";
-                    break;
-                case ParrotTypeEnum.NORWEGIAN_BLUE:
-                    value = _voltage > 0 ? "Bzzzzzz" : "...";
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
-            return value;
+                ParrotTypeEnum.AFRICAN => ParotFactory.African(numberOfCoconuts),
+                ParrotTypeEnum.EUROPEAN => ParotFactory.European(),
+                ParrotTypeEnum.NORWEGIAN_BLUE => ParotFactory.NorwegianBlue(voltage, isNailed),
+                _ => throw new ArgumentException("Este tipo de papagaio não é suportado")
+            };
         }
     }
 }
