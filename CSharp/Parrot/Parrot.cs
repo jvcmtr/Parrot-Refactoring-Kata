@@ -6,7 +6,7 @@ namespace Parrot
 {
 
     /// <summary>
-    /// ⚠️ This class is deprecated. Please use <c><see cref="IParrot"/></c> <c><see cref="ParrotFactory"/></c> instead.
+    /// ⚠️ This class is deprecated. Please use <c><see cref="IParrot"/></c> and <c><see cref="ParrotFactory"/></c> instead.
     /// </summary>
     [Obsolete("Use IParrot instead.")]
     public class Parrot : IParrot
